@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typo Terror</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-theme="arcade">
+  <header class="topbar">
+    <button class="brand" id="homeBtn" type="button">TYPO TERROR</button>
+    <div class="topbar-right">
+      <div class="coins" title="Coins"><span class="coin-icon"></span><span id="coinCount">0</span></div>
+      <button class="icon-btn" id="muteBtn" type="button">Sound: On</button>
+    </div>
+  </header>
+
+  <main id="app">
+    <section class="screen" id="screen-title">
+      <h1 class="logo">TYPO<br>TERROR</h1>
+      <p class="tagline">One mistake. Back to the start.</p>
+      <div class="menu">
+        <button class="btn btn-big" id="playBtn" type="button">Play</button>
+        <button class="btn" id="shopBtn" type="button">Coin Shop</button>
+        <button class="btn" id="badgesBtn" type="button">Badges</button>
+      </div>
+      <ul class="rules">
+        <li>Type the text exactly. One wrong key and it all clears.</li>
+        <li>Backspace won't save you. Neither will copy and paste.</li>
+        <li>Leave the tab and your run resets.</li>
+        <li>Grab golden letters for bonus coins.</li>
+      </ul>
+      <p class="hint-press">Press Enter to start</p>
+    </section>
+
+    <section class="screen" id="screen-map" hidden>
+      <div class="screen-head">
+        <button class="btn btn-small" data-go="title" type="button">Back</button>
+        <h2>Choose a level</h2>
+        <label class="nightmare-toggle" id="nightmareToggle" hidden>
+          <input type="checkbox" id="nightmareCheck"> Nightmare Mode
+        </label>
+      </div>
+      <div id="worlds"></div>
+    </section>
+
+    <section class="screen" id="screen-play" hidden>
+      <div class="hud">
+        <div class="hud-left">
+          <div class="hud-level" id="hudLevel">Level 1</div>
+          <div class="hud-mod" id="hudMod" hidden></div>
+        </div>
+        <div class="hud-stats">
+          <div class="stat"><span class="stat-label">Attempt</span><span id="hudAttempt">1</span></div>
+          <div class="stat"><span class="stat-label">Gold</span><span id="hudGold">0/0</span></div>
+          <div class="stat"><span class="stat-label" id="hudTimerLabel">Time</span><span id="hudTimer">0.0</span></div>
+        </div>
+      </div>
+      <div class="bars">
+        <div class="bar"><div class="bar-fill you" id="barYou"></div></div>
+        <div class="bar ghost-bar" id="ghostBarWrap" hidden><div class="bar-fill ghost" id="barGhost"></div></div>
+      </div>
+      <div class="stage" id="stage">
+        <canvas id="board" aria-label="Text to type"></canvas>
+        <div class="stage-prompt" id="stagePrompt">Start typing when you're ready</div>
+      </div>
+      <div class="play-foot">
+        <span>One mistake = restart. Backspace won't help.</span>
+        <button class="btn btn-small" id="quitBtn" type="button">Quit (Esc)</button>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-shop" hidden>
+      <div class="screen-head">
+        <button class="btn btn-small" data-go="title" type="button">Back</button>
+        <h2>Coin Shop</h2>
+      </div>
+      <h3>Cursor skins</h3>
+      <div class="grid" id="shopSkins"></div>
+      <h3>Themes</h3>
+      <div class="grid" id="shopThemes"></div>
+    </section>
+
+    <section class="screen" id="screen-badges" hidden>
+      <div class="screen-head">
+        <button class="btn btn-small" data-go="title" type="button">Back</button>
+        <h2>Badges</h2>
+      </div>
+      <div class="grid" id="badgeGrid"></div>
+    </section>
+  </main>
+
+  <div class="overlay" id="winModal" hidden>
+    <div class="modal">
+      <h2 class="win-title" id="winTitle">LEGEND!</h2>
+      <div class="stars" id="winStars"></div>
+      <div class="win-stats" id="winStats"></div>
+      <div class="punchline" id="winPunchline" hidden></div>
+      <div class="win-extra" id="winExtra" hidden></div>
+      <div class="modal-actions">
+        <button class="btn btn-big" id="nextBtn" type="button">Next level</button>
+        <button class="btn" id="retryBtn" type="button">Play again</button>
+        <button class="btn" id="mapBtn" type="button">Level map</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toasts" aria-live="polite"></div>
+  <div id="confetti"></div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/levels.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/anticheat.js"></script>
+  <script src="js/surprises.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
