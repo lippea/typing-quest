@@ -4,8 +4,8 @@ const Renderer = (() => {
   const FONT = '"SF Mono", ui-monospace, Menlo, Consolas, "Courier New", monospace';
   const PAD_X = 26;
   const PAD_Y = 22;
-  const FADE_DELAY = 3000;
-  const FADE_TIME = 1500;
+  const FADE_DELAY = 5000;
+  const FADE_TIME = 1000;
   const FADE_LOOKAHEAD = 6;
 
   let canvas, ctx;
@@ -184,11 +184,11 @@ const Renderer = (() => {
           glow = 12 + Math.sin(now / 150) * 6;
         }
         if (fadeAmount > 0 && i > index + FADE_LOOKAHEAD) {
-          alpha = Math.max(0.1, 1 - fadeAmount);
+          alpha = 1 - fadeAmount;
         }
       }
 
-      if (ch === ' ') continue;
+      if (ch === ' ' || alpha <= 0) continue;
       ctx.globalAlpha = alpha;
       ctx.fillStyle = color;
       if (glow) {

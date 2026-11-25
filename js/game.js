@@ -2,9 +2,11 @@
   const $ = sel => document.querySelector(sel);
 
   const RESET_LOCK_MS = 700;
-  const COUNTDOWN_WPM = 18;
-  const NIGHTMARE_COUNTDOWN_WPM = 25;
-  const DEFAULT_GHOST_WPM = 25;
+  const DEFAULT_LEVEL_WPM = 20;
+  const NIGHTMARE_EXTRA_WPM = 6;
+  const COUNTDOWN_EXTRA_WPM = 6;
+  const TIME_GRACE_MS = 2000;
+  const DEFAULT_GHOST_WPM = 24;
   const NIGHTMARE_CYCLE = ['fade', 'countdown', 'ghost', 'final'];
   const BOSS_IDS = [3, 6, 9, 12];
 
@@ -254,7 +256,9 @@
   function ghostKey() { return starsKey(S.level.id); }
 
   function countdownMs(chars) {
-    const wpm = nightmare ? NIGHTMARE_COUNTDOWN_WPM : COUNTDOWN_WPM;
+    let wpm = S.level.wpm || DEFAULT_LEVEL_WPM;
+    if (nightmare) wpm += NIGHTMARE_EXTRA_WPM;
+    if (S.mods.countdown && S.level.boss !== 'countdown') wpm += COUNTDOWN_EXTRA_WPM;
     return Math.ceil((chars / 5) / wpm * 60000);
   }
 
@@ -273,7 +277,7 @@
     $('#hudMod').hidden = !desc;
     $('#hudMod').textContent = desc;
     $('#ghostBarWrap').hidden = !S.mods.ghost;
-    $('#hudTimerLabel').textContent = S.mods.countdown ? 'Left' : 'Time';
+    $('#hudTimerLabel').textContent = 'Left';
     if (desc && S.level.boss) toast(`BOSS LEVEL! ${desc}`, 'bad', 3500);
     else if (desc) toast(desc, 'bad', 3000);
 
@@ -295,7 +299,7 @@
     S.timeline = [];
     S.goldens = Surprises.pickGoldens(S.text);
     S.goldenHit = 0;
-    S.timeLimit = S.mods.countdown ? countdownMs(S.text.length) + 3000 : 0;
+    S.timeLimit = countdownMs(S.text.length) + TIME_GRACE_MS;
     S.ghostTimeline = S.mods.ghost ? (save.ghosts[ghostKey()] || null) : null;
     S.locked = false;
     AntiCheat.reset();
@@ -326,15 +330,9 @@
     $('#hudAttempt').textContent = S.attempts;
     $('#hudGold').textContent = `${S.goldenHit}/${S.goldens.size}`;
     const timerStat = $('#hudTimer').parentElement;
-    if (S.mods.countdown) {
-      const left = S.startTime ? Math.max(0, S.timeLimit - (now - S.startTime)) : S.timeLimit;
-      $('#hudTimer').textContent = (left / 1000).toFixed(1);
-      timerStat.classList.toggle('danger', left < 10000);
-    } else {
-      const elapsed = S.startTime ? now - S.startTime : 0;
-      $('#hudTimer').textContent = (elapsed / 1000).toFixed(1);
-      timerStat.classList.remove('danger');
-    }
+    const left = S.startTime ? Math.max(0, S.timeLimit - (now - S.startTime)) : S.timeLimit;
+    $('#hudTimer').textContent = (left / 1000).toFixed(1);
+    timerStat.classList.toggle('danger', left < Math.min(10000, S.timeLimit * 0.25));
     $('#barYou').style.width = (S.index / S.text.length * 100) + '%';
     if (S.mods.ghost) {
       const g = Math.min(S.text.length, ghostIndexAt(now) || 0);
@@ -368,7 +366,7 @@
   function tick(now) {
     updateHud(now);
     if (S.locked || !S.startTime) return;
-    if (S.mods.countdown && now - S.startTime > S.timeLimit) fail('time');
+    if (now - S.startTime > S.timeLimit) fail('time');
     else if (S.mods.ghost && ghostIndexAt(now) >= S.text.length) fail('ghost');
   }
 
@@ -408,7 +406,7 @@
     const extra = S.twistPending;
     S.twistPending = null;
     S.text += extra;
-    if (S.mods.countdown) S.timeLimit += countdownMs(extra.length);
+    S.timeLimit += countdownMs(extra.length);
     Renderer.layout(S.text);
     Sound.twist();
     toast('PLOT TWIST! You are not done yet...', 'joke', 2600);
@@ -455,7 +453,7 @@
     const ms = Math.max(1, now - S.startTime);
     const chars = S.text.length;
     const wpm = Math.round((chars / 5) / (ms / 60000));
-    const stars = wpm >= 35 ? 3 : wpm >= 20 ? 2 : 1;
+    const stars = wpm >= 40 ? 3 : wpm >= 28 ? 2 : 1;
     const level = S.level;
     const key = starsKey(level.id);
     const firstClear = !save.stars[key];

@@ -20,15 +20,23 @@ The workflow in `.github/workflows/deploy-pages.yml` deploys whenever `main` is 
 
 ## How the game works
 
-- **Levels**: World 1 is short lowercase words, World 2 adds capitals and punctuation,
-  World 3 adds numbers and symbols, World 4 is full paragraphs.
-- **Bosses**: level 3 fades out the text ahead of you, level 6 has a countdown,
-  level 9 is a race against a ghost of your best run, level 12 reveals one line at a
-  time and wobbles.
-- **Stars**: 1 star for finishing, 2 stars at 20+ WPM, 3 stars at 35+ WPM.
+- **Levels**: levels 1-2 are an easy on-ramp anyone can finish (short lowercase
+  lines, then simple sentences). Level 3 adds a few numbers. From level 4 on, letters
+  and symbols are mixed: World 2 adds numbers, quotes, brackets and `& % ;`,
+  World 3 is symbol-heavy, World 4 is paragraphs of about 380-470 characters.
+  Passages use richer everyday vocabulary, including commonly misspelt words.
+- **Time limit**: every level is timed. The limit is the passage length typed at
+  the level's `wpm` (15 in level 1 up to 24 in level 12), plus 2 seconds.
+  Nightmare Mode adds 6 WPM.
+- **Bosses**: level 3 makes the text ahead of you vanish completely after 5 seconds,
+  level 6 has a much stricter clock, level 9 is a race against a ghost of your best
+  run, level 12 reveals one line at a time and wobbles.
+- **Stars**: 1 star for finishing, 2 stars at 28+ WPM, 3 stars at 40+ WPM.
 - **Coins**: earned per win (half for replays), +5 per golden letter, doubled in
   Nightmare Mode. Spent in the Coin Shop on cursor skins and themes.
-- Progress is saved per browser in `localStorage`.
+- Progress is saved per browser in `localStorage`. To wipe everyone's progress after
+  a big content change, bump `KEY` in `js/storage.js` and add the old key to
+  `OLD_KEYS`.
 
 ## Surprises (spoilers)
 
@@ -61,3 +69,4 @@ or patching the game). That's fine for a classroom game; it stops the easy cheat
 Passages live in `js/levels.js`. A passage is a string, or an object with optional
 `punchline` (shown on the win screen) and `twist` (appended when you think you've
 finished). Keep text plain ASCII with straight quotes so every character is typeable.
+Each level's `wpm` sets how strict its time limit is.
