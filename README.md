@@ -35,8 +35,8 @@ The workflow in `.github/workflows/deploy-pages.yml` deploys whenever `main` is 
 - **Coins**: earned per win (half for replays), +5 per golden letter, doubled in
   Nightmare Mode. Spent in the Coin Shop on cursor skins and themes.
 - Progress is saved per browser in `localStorage`. To wipe everyone's progress after
-  a big content change, bump `KEY` in `js/storage.js` and add the old key to
-  `OLD_KEYS`.
+  a big content change, bump the version in `KEY` in `js/storage.js` (for example
+  `v3` to `v4`); old saves are then simply ignored.
 
 ## Surprises (spoilers)
 

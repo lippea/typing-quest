@@ -2,11 +2,8 @@
 // hand-editing the save in devtools resets it.
 const Storage = (() => {
   const KEY = 'typoTerror.save.v3';
-  const OLD_KEYS = ['typoTerror.save.v1', 'typoTerror.save.v2'];
   const SALT = 'tt-y7-no-cheaters-2026';
   let tampered = false;
-
-  OLD_KEYS.forEach(k => localStorage.removeItem(k));
 
   function defaults() {
     return {
